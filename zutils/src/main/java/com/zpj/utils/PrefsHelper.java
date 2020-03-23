@@ -335,5 +335,13 @@ public class PrefsHelper {
         sharedPreferences.edit().clear().apply();
     }
 
+    public void registerOnChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public void unregisterOnChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
+    }
+
 
 }
