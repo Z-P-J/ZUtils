@@ -61,12 +61,13 @@ public class ScreenUtils {
     }
 
     public static DisplayMetrics getDisplayMetrics(Context context) {
-        Activity activity;
-        if (!(context instanceof Activity) && context instanceof ContextWrapper) {
-            activity = (Activity) ((ContextWrapper) context).getBaseContext();
-        } else {
-            activity = (Activity) context;
-        }
+//        Activity activity;
+//        if (!(context instanceof Activity) && context instanceof ContextWrapper) {
+//            activity = (Activity) ((ContextWrapper) context).getBaseContext();
+//        } else {
+//            activity = (Activity) context;
+//        }
+        Activity activity = ContextUtils.getActivity(context);
         DisplayMetrics metrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         return metrics;
@@ -89,6 +90,14 @@ public class ScreenUtils {
 
     public static int getScreenHeight(Context context) {
         return context.getResources().getDisplayMetrics().heightPixels;
+    }
+
+    public static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    public static int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
 //    /**
@@ -130,27 +139,25 @@ public class ScreenUtils {
 //    }
 
     public static int getStatusBarHeight(Context context) {
-        Resources resources = context.getResources();
-        int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            return resources.getDimensionPixelSize(resourceId);
-        }
-        return 0;
+        return StatusBarUtils.getStatusBarHeight(context);
+    }
+
+    public static int getStatusBarHeight() {
+        return StatusBarUtils.getStatusBarHeight();
     }
 
     /**
      * 获取底部导航栏 (Navigation Bar) 高度
      */
-    public static int getNavigationBarHeight(Context context) {
-        Resources resources = context.getResources();
-        int resourceId = context.getResources().getIdentifier("navigation_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            return resources.getDimensionPixelSize(resourceId);
-        }
-        return 0;
+    public static int getNavBarHeight(Context context) {
+        return StatusBarUtils.getNavBarHeight(context);
     }
 
-    public static int getAppInScreenheight(Context context) {
+    public static int getNavBarHeight() {
+        return StatusBarUtils.getNavBarHeight();
+    }
+
+    public static int getAppInScreenHeight(Context context) {
         return getScreenHeight(context) - getStatusBarHeight(context);
     }
 

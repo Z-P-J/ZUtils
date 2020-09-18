@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.zpj.utils.ZUtils;
+import com.zpj.utils.ContextUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toast.makeText(this, "context=" + ZUtils.getApplicationContext(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "context=" + ContextUtils.getApplicationContext(), Toast.LENGTH_SHORT).show();
     }
 
 }

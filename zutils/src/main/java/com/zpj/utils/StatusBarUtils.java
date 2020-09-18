@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -179,15 +180,27 @@ public class StatusBarUtils {
         return context.getResources().getDimensionPixelSize(resourceId);
     }
 
+    public static int getStatusBarHeight() {
+        Resources resources = Resources.getSystem();
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        return resources.getDimensionPixelSize(resourceId);
+    }
+
     /**
      * 获取导航栏高度
      *
      * @param context
      * @return
      */
-    public static int getNavigationBarHeight(Context context) {
+    public static int getNavBarHeight(Context context) {
         int resourceId = context.getResources().getIdentifier("navigation_bar_height", "dimen", "android");
         return context.getResources().getDimensionPixelSize(resourceId);
+    }
+
+    public static int getNavBarHeight() {
+        Resources resources = Resources.getSystem();
+        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+        return resources.getDimensionPixelSize(resourceId);
     }
 
     /**
@@ -217,4 +230,35 @@ public class StatusBarUtils {
         }
         return hasNavigationBar;
     }
+
+    /**
+     * Return whether the navigation bar visible.
+     * <p>Call it in onWindowFocusChanged will get right result.</p>
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isNavBarVisible(Context context) {
+        boolean isVisible = false;
+        ViewGroup decorView = (ViewGroup) ContextUtils.getActivity(context).getWindow().getDecorView();
+        for (int i = 0, count = decorView.getChildCount(); i < count; i++) {
+            final View child = decorView.getChildAt(i);
+            final int id = child.getId();
+            if (id != View.NO_ID) {
+                String resourceEntryName = context
+                        .getResources()
+                        .getResourceEntryName(id);
+                if ("navigationBarBackground".equals(resourceEntryName)
+                        && child.getVisibility() == View.VISIBLE) {
+                    isVisible = true;
+                    break;
+                }
+            }
+        }
+        if (isVisible) {
+            int visibility = decorView.getSystemUiVisibility();
+            isVisible = (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0;
+        }
+        return isVisible;
+    }
+
 }

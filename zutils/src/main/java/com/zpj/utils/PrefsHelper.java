@@ -1,7 +1,6 @@
 package com.zpj.utils;
 
 import android.annotation.TargetApi;
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -43,11 +42,11 @@ public class PrefsHelper {
     }
 
     public static PrefsHelper with() {
-        return with(ZUtils.getApplicationContext().getPackageName() + "_preferences");
+        return with(ContextUtils.getApplicationContext().getPackageName() + "_preferences");
     }
 
     public static PrefsHelper with(@NonNull String preferencesName) {
-        getInstance().setCurrentPrefs(ZUtils.getApplicationContext(), preferencesName);
+        getInstance().setCurrentPrefs(ContextUtils.getApplicationContext(), preferencesName);
         return getInstance();
     }
 
@@ -343,5 +342,7 @@ public class PrefsHelper {
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
-
+    public SharedPreferences getSharedPreferences() {
+        return sharedPreferences;
+    }
 }

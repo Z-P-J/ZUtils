@@ -269,6 +269,19 @@ public class AppUtils {
         return installed;
     }
 
+    public static boolean isApkInstalled(Context context, String packgeName){
+        boolean isInstalled;
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            packageManager.getPackageInfo(packgeName, PackageManager.GET_ACTIVITIES);
+            isInstalled = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            isInstalled = false;
+        }
+        return isInstalled;
+    }
+
     @Deprecated
     public static boolean installApk(Context context, String filePath) {
         File file = new File(filePath);

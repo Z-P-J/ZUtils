@@ -68,12 +68,16 @@ public class KeyboardHeightProvider extends PopupWindow {
     private static int sDecorViewDelta = 0;
     private OnGlobalLayoutListener onGlobalLayoutListener;
 
+    public KeyboardHeightProvider(Activity activity) {
+        this(activity, 0);
+    }
+
     /**
      * Construct a new KeyboardHeightProvider
      *
      * @param activity The parent activity
      */
-    public KeyboardHeightProvider(Activity activity) {
+    public KeyboardHeightProvider(Activity activity, final long delayMillis) {
         super(activity);
         this.activity = activity;
 
@@ -98,7 +102,7 @@ public class KeyboardHeightProvider extends PopupWindow {
                         public void run() {
                             handleOnGlobalLayout();
                         }
-                    }, 100);
+                    }, delayMillis);
                 }
             }
         };

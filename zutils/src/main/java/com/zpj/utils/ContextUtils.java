@@ -4,12 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.os.Handler;
 import android.os.Looper;
 
 import java.lang.ref.WeakReference;
 
-public class ZUtils {
+public class ContextUtils {
 //    private static ZUtils zUtils;
 //    private final WeakReference<Context> weakReference;
 
@@ -90,6 +91,14 @@ public class ZUtils {
 
     public static Context getApplicationContext() {
         return INSTANCE.getApplicationContext();
+    }
+
+    public static Activity getActivity(Context context) {
+        if (context instanceof Activity) {
+            return (Activity) context;
+        } else {
+            return ((Activity) ((ContextWrapper) context).getBaseContext());
+        }
     }
 
 
