@@ -1,7 +1,9 @@
 package com.zpj.utils;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
+import android.util.TypedValue;
 
 public class ColorUtils {
 
@@ -110,6 +112,73 @@ public class ColorUtils {
         float g = (float) Color.green(color1) * inverseRatio + (float) Color.green(color2) * ratio;
         float b = (float) Color.blue(color1) * inverseRatio + (float) Color.blue(color2) * ratio;
         return Color.argb((int) a, (int) r, (int) g, (int) b);
+    }
+
+    /**
+     * @author 小米Xylitol
+     * @email xiaomi987@hotmail.com
+     * @desc  低版本ArgbEvaluator计算有问题，直接使用新版
+     * @date 2018-05-15 17:10
+     */
+    /**
+     *  渐变色工具
+     * @param fraction  滑动数值
+     * @param startValue  开始颜色
+     * @param endValue   结束颜色
+     * @return
+     */
+    public static int evaluateArgb(float fraction, int startValue, int endValue) {
+        float startA = ((startValue >> 24) & 0xff) / 255.0f;
+        float startR = ((startValue >> 16) & 0xff) / 255.0f;
+        float startG = ((startValue >>  8) & 0xff) / 255.0f;
+        float startB = ( startValue        & 0xff) / 255.0f;
+
+        float endA = ((endValue >> 24) & 0xff) / 255.0f;
+        float endR = ((endValue >> 16) & 0xff) / 255.0f;
+        float endG = ((endValue >>  8) & 0xff) / 255.0f;
+        float endB = ( endValue        & 0xff) / 255.0f;
+
+        // convert from sRGB to linear
+        startR = (float) Math.pow(startR, 2.2);
+        startG = (float) Math.pow(startG, 2.2);
+        startB = (float) Math.pow(startB, 2.2);
+
+        endR = (float) Math.pow(endR, 2.2);
+        endG = (float) Math.pow(endG, 2.2);
+        endB = (float) Math.pow(endB, 2.2);
+
+        // compute the interpolated color in linear space
+        float a = startA + fraction * (endA - startA);
+        float r = startR + fraction * (endR - startR);
+        float g = startG + fraction * (endG - startG);
+        float b = startB + fraction * (endB - startB);
+
+        // convert back to sRGB in the [0..255] range
+        a = a * 255.0f;
+        r = (float) Math.pow(r, 1.0 / 2.2) * 255.0f;
+        g = (float) Math.pow(g, 1.0 / 2.2) * 255.0f;
+        b = (float) Math.pow(b, 1.0 / 2.2) * 255.0f;
+
+        return Math.round(a) << 24 | Math.round(r) << 16 | Math.round(g) << 8 | Math.round(b);
+    }
+
+
+    public static int getColorPrimary(Context context){
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        return typedValue.data;
+    }
+
+    public static int getColorPrimaryDark(Context context){
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
+        return typedValue.data;
+    }
+
+    public static int getColorAccent(Context context){
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.colorAccent, typedValue, true);
+        return typedValue.data;
     }
 
 }

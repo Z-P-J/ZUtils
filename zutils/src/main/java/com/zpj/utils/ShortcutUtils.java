@@ -74,7 +74,7 @@ public final class ShortcutUtils {
      *
      * @param activity Activity
      */
-    public static void delShortcut(Activity activity, String title) {
+    public static void removeShortcut(Activity activity, String title) {
 
         Intent shortcut = new Intent(
                 "com.android.launcher.action.UNINSTALL_SHORTCUT");

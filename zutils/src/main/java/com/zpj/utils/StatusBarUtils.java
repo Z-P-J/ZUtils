@@ -1,6 +1,7 @@
 package com.zpj.utils;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -41,6 +42,10 @@ public class StatusBarUtils {
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             transparentStatusBarAbove21(window);
         }
+    }
+
+    public static void transparentStatusBar(Activity activity) {
+        transparentStatusBar(activity.getWindow());
     }
 
     @TargetApi(21)
@@ -84,6 +89,20 @@ public class StatusBarUtils {
         } else {
             setStatusBarDarkMode(window, true);
         }
+    }
+
+    /**
+     * 设置状态栏图标白色主题
+     */
+    public static void setLightMode(Activity activity) {
+        setLightMode(activity.getWindow());
+    }
+
+    /**
+     * 设置状态栏图片黑色主题
+     */
+    public static void setDarkMode(Activity activity) {
+        setDarkMode(activity.getWindow());
     }
 
     private static void setStatusBarDarkMode(Window window, boolean darkMode) {

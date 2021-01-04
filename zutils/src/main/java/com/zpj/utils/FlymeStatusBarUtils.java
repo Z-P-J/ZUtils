@@ -191,10 +191,8 @@ public class FlymeStatusBarUtils {
             changeMeizuFlag(window.getAttributes(), "MEIZU_FLAG_DARK_STATUS_BAR_ICON", dark);
         } else {
             View decorView = window.getDecorView();
-            if (decorView != null) {
-                setStatusBarDarkIcon(decorView, dark);
-                setStatusBarColor(window, 0);
-            }
+            setStatusBarDarkIcon(decorView, dark);
+            setStatusBarColor(window, 0);
         }
     }
 
@@ -202,8 +200,7 @@ public class FlymeStatusBarUtils {
         if (mSetStatusBarDarkIcon != null) {
             try {
                 mSetStatusBarDarkIcon.invoke(activity, dark);
-            } catch (IllegalAccessException e) {
-            } catch (InvocationTargetException e) {
+            } catch (IllegalAccessException | InvocationTargetException ignored) {
             }
         } else {
             if (flag) {

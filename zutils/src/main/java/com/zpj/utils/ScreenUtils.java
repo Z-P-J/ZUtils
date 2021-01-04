@@ -22,6 +22,41 @@ import java.lang.reflect.Field;
 
 public class ScreenUtils {
 
+    public static float dp2px(float dp) {
+        return dp2px(ContextUtils.getApplicationContext(), dp);
+    }
+
+    public static float px2dp(float px) {
+        return px2dp(ContextUtils.getApplicationContext(), px);
+    }
+
+    public static float density() {
+        return density(ContextUtils.getApplicationContext());
+    }
+
+
+    public static int dp2pxInt(float dp) {
+        return dp2pxInt(ContextUtils.getApplicationContext(), dp);
+    }
+
+    public static float px2dpInt(float px) {
+        return px2dpInt(ContextUtils.getApplicationContext(), px);
+    }
+
+
+    public static int sp2px(float spValue) {
+        return sp2px(ContextUtils.getApplicationContext(), spValue);
+    }
+
+    public static int px2sp(float pxValue) {
+        return px2sp(ContextUtils.getApplicationContext(), pxValue);
+    }
+
+
+
+
+
+
     public static float dp2px(Context context, float dp) {
         if (context == null) {
             return -1;
@@ -60,18 +95,18 @@ public class ScreenUtils {
         return (int) (pxValue / fontScale + 0.5f);
     }
 
-    public static DisplayMetrics getDisplayMetrics(Context context) {
-//        Activity activity;
-//        if (!(context instanceof Activity) && context instanceof ContextWrapper) {
-//            activity = (Activity) ((ContextWrapper) context).getBaseContext();
-//        } else {
-//            activity = (Activity) context;
-//        }
-        Activity activity = ContextUtils.getActivity(context);
-        DisplayMetrics metrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        return metrics;
-    }
+//    public static DisplayMetrics getDisplayMetrics(Context context) {
+////        Activity activity;
+////        if (!(context instanceof Activity) && context instanceof ContextWrapper) {
+////            activity = (Activity) ((ContextWrapper) context).getBaseContext();
+////        } else {
+////            activity = (Activity) context;
+////        }
+//        Activity activity = ContextUtils.getActivity(context);
+//        DisplayMetrics metrics = new DisplayMetrics();
+//        activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+//        return metrics;
+//    }
 
     /**
      * 获取屏幕大小
@@ -79,8 +114,13 @@ public class ScreenUtils {
      * @param context
      * @return
      */
-    public static int[] getScreenPixelSize(Context context) {
-        DisplayMetrics metrics = getDisplayMetrics(context);
+//    public static int[] getScreenPixelSize(Context context) {
+//        DisplayMetrics metrics = getDisplayMetrics(context);
+//        return new int[]{metrics.widthPixels, metrics.heightPixels};
+//    }
+
+    public static int[] getScreenSize(Context context) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return new int[]{metrics.widthPixels, metrics.heightPixels};
     }
 
@@ -90,6 +130,11 @@ public class ScreenUtils {
 
     public static int getScreenHeight(Context context) {
         return context.getResources().getDisplayMetrics().heightPixels;
+    }
+
+    public static int[] getScreenSize() {
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        return new int[]{metrics.widthPixels, metrics.heightPixels};
     }
 
     public static int getScreenWidth() {
@@ -161,29 +206,32 @@ public class ScreenUtils {
         return getScreenHeight(context) - getStatusBarHeight(context);
     }
 
-    /**
-     * 获得屏幕宽高pix
-     *
-     * @param context
-     * @return
-     */
-    public static int[] getScreen(Context context) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(displayMetrics);
-        return new int[]{displayMetrics.widthPixels, displayMetrics.heightPixels};
+    public static int getAppInScreenHeight() {
+        return getScreenHeight() - getStatusBarHeight();
     }
+
+//    /**
+//     * 获得屏幕宽高pix
+//     *
+//     * @param context
+//     * @return
+//     */
+//    public static int[] getScreen(Context context) {
+//        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+//        DisplayMetrics displayMetrics = new DisplayMetrics();
+//        wm.getDefaultDisplay().getMetrics(displayMetrics);
+//        return new int[]{displayMetrics.widthPixels, displayMetrics.heightPixels};
+//    }
 
     /***
      * 获得标题栏的高度pix
      *
      * @param activity
-     * @param context
      * @return
      */
-    public static int getTitleHeight(Activity activity, Context context) {
+    public static int getTitleHeight(Activity activity) {
         int contentTop = activity.getWindow().findViewById(Window.ID_ANDROID_CONTENT).getTop();
-        int titleheight = contentTop - getStatusBarHeight(context);
+        int titleheight = contentTop - getStatusBarHeight(activity);
         return titleheight;
     }
 
@@ -199,7 +247,7 @@ public class ScreenUtils {
         view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
         Bitmap bmp = view.getDrawingCache();
-        int[] screen = getScreen(activity);
+        int[] screen = getScreenSize(activity);
         int width = screen[0];
         int height = screen[1];
         Bitmap bp = null;
@@ -222,7 +270,7 @@ public class ScreenUtils {
         Rect frame = new Rect();
         activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
         int statusBarHeight = frame.top;
-        int[] screen = getScreen(activity);
+        int[] screen = getScreenSize(activity);
         int width = screen[0];
         int height = screen[1];
         Bitmap bp = null;
@@ -254,6 +302,10 @@ public class ScreenUtils {
         return context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
+    public static boolean isLandscape() {
+        return Resources.getSystem().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
     /**
      * 设置屏幕为横屏
      * <p>还有一种就是在Activity中加属性android:screenOrientation="landscape"</p>
@@ -268,6 +320,11 @@ public class ScreenUtils {
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
+    public static void setLandscape(final Context context) {
+        Activity activity = ContextUtils.getActivity(context);
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
     /**
      * 判断是否竖屏
      *
@@ -277,12 +334,21 @@ public class ScreenUtils {
         return context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
     }
 
+    public static boolean isPortrait() {
+        return Resources.getSystem().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+    }
+
     /**
      * 设置屏幕为竖屏
      *
      * @param activity activity
      */
     public static void setPortrait(final Activity activity) {
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    public static void setPortrait(final Context context) {
+        Activity activity = ContextUtils.getActivity(context);
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
@@ -316,6 +382,10 @@ public class ScreenUtils {
         return km.inKeyguardRestrictedInputMode();
     }
 
+    public static boolean isScreenLock() {
+        return isScreenLock(ContextUtils.getApplicationContext());
+    }
+
     /**
      * 获取进入休眠时长
      *
@@ -330,6 +400,10 @@ public class ScreenUtils {
         }
     }
 
+    public static int getSleepDuration() {
+        return getSleepDuration(ContextUtils.getApplicationContext());
+    }
+
     /**
      * 设置进入休眠时长
      * <p>需添加权限 {@code <uses-permission android:name="android.permission.WRITE_SETTINGS" />}</p>
@@ -338,6 +412,10 @@ public class ScreenUtils {
      */
     public static void setSleepDuration(Context context, final int duration) {
         Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, duration);
+    }
+
+    public static void setSleepDuration(final int duration) {
+        setSleepDuration(ContextUtils.getApplicationContext(), duration);
     }
 
 

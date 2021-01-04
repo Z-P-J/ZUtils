@@ -11,8 +11,6 @@ import android.os.Looper;
 import java.lang.ref.WeakReference;
 
 public class ContextUtils {
-//    private static ZUtils zUtils;
-//    private final WeakReference<Context> weakReference;
 
     private static Application INSTANCE;
 
@@ -59,36 +57,6 @@ public class ContextUtils {
         return app;
     }
 
-//    private ZUtils(Context context) {
-////        this.context = context;
-//        weakReference = new WeakReference<>(context);
-//    }
-
-//    public static void init(Context context) {
-//        if (zUtils == null) {
-//            synchronized (ZUtils.class) {
-//                if (zUtils == null) {
-//                    zUtils = new ZUtils(context);
-//                }
-//            }
-//        }
-//    }
-
-//    public static ZUtils getInstance() {
-//        if (zUtils == null) {
-//            throw new RuntimeException("You must init ZUtils in your application!");
-//        }
-//        return zUtils;
-//    }
-//
-//    public Context getContext() {
-//        if (weakReference.get() == null) {
-//            return INSTANCE.getApplicationContext();
-//        } else {
-//            return weakReference.get();
-//        }
-//    }
-
     public static Context getApplicationContext() {
         return INSTANCE.getApplicationContext();
     }
@@ -100,41 +68,5 @@ public class ContextUtils {
             return ((Activity) ((ContextWrapper) context).getBaseContext());
         }
     }
-
-
-//    private ZUtils(Application context) {
-//        this.application = context;
-//    }
-//
-//    public static void init(Application context) {
-//        if (zUtils == null) {
-//            synchronized (ZUtils.class) {
-//                if (zUtils == null) {
-//                    zUtils = new ZUtils(context);
-//                }
-//            }
-//        }
-//    }
-//
-//    public static void init(Activity context) {
-//        if (zUtils == null) {
-//            synchronized (ZUtils.class) {
-//                if (zUtils == null) {
-//                    zUtils = new ZUtils(context.getApplication());
-//                }
-//            }
-//        }
-//    }
-//
-//    public static ZUtils getInstance() {
-//        if (zUtils == null) {
-//            throw new RuntimeException("You must init ZUtils in your application!");
-//        }
-//        return zUtils;
-//    }
-//
-//    public Context getContext() {
-//        return application.getApplicationContext();
-//    }
 
 }

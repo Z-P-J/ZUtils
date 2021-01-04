@@ -16,6 +16,7 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import java.net.InetAddress;
@@ -29,6 +30,29 @@ import java.util.UUID;
  * https://github.com/nisrulz/easydeviceinfo
  */
 public class DeviceUtils {
+
+    public static String getAndroidID() {
+        return getAndroidID(ContextUtils.getApplicationContext());
+    }
+
+    @SuppressLint("MissingPermission")
+    public static String getIMEI() {
+        return getIMEI(ContextUtils.getApplicationContext());
+    }
+
+    @SuppressLint("MissingPermission")
+    public static String getIMSI() {
+        return getIMSI(ContextUtils.getApplicationContext());
+    }
+
+    @SuppressWarnings("MissingPermission")
+    public static String getWifiMacAddr() {
+        return getWifiMacAddr(ContextUtils.getApplicationContext());
+    }
+
+    public static String getIP() {
+        return getIP(ContextUtils.getApplicationContext());
+    }
 
 
     public static String getAndroidID(Context ctx) {
@@ -105,6 +129,11 @@ public class DeviceUtils {
         return tm.getSimSerialNumber();
     }
 
+    @SuppressLint("MissingPermission")
+    public static String getSIMSerial() {
+        return getSIMSerial(ContextUtils.getApplicationContext());
+    }
+
     public static String getMNC(Context ctx) {
         String providersName = "";
         TelephonyManager telephonyManager = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
@@ -115,9 +144,17 @@ public class DeviceUtils {
         return providersName;
     }
 
+    public static String getMNC() {
+        return getMNC(ContextUtils.getApplicationContext());
+    }
+
     public static String getCarrier(Context ctx) {
         TelephonyManager tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
         return tm.getNetworkOperatorName().toLowerCase(Locale.getDefault());
+    }
+
+    public static String getCarrier() {
+        return getCarrier(ContextUtils.getApplicationContext());
     }
 
 
@@ -191,6 +228,10 @@ public class DeviceUtils {
         return String.valueOf(wm.getDefaultDisplay().getDisplayId());
     }
 
+    public static String getScreenDisplayID() {
+        return getScreenDisplayID(ContextUtils.getApplicationContext());
+    }
+
     public static String getDisplayVersion() {
         return Build.DISPLAY;
     }
@@ -204,6 +245,10 @@ public class DeviceUtils {
         TelephonyManager tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
         Locale locale = Locale.getDefault();
         return tm.getSimState() == TelephonyManager.SIM_STATE_READY ? tm.getSimCountryIso().toLowerCase(Locale.getDefault()) : locale.getCountry().toLowerCase(locale);
+    }
+
+    public static String getCountry() {
+        return getCountry(ContextUtils.getApplicationContext());
     }
 
     public static String getOSVersion() {
@@ -226,6 +271,10 @@ public class DeviceUtils {
         return result;
     }
 
+    public static String getGSFID() {
+        return getGSFID(ContextUtils.getApplicationContext());
+    }
+
     //<uses-permission android:name="android.permission.BLUETOOTH"/>
     @SuppressWarnings("MissingPermission")
     public static String getBluetoothMAC(Context context) {
@@ -240,6 +289,10 @@ public class DeviceUtils {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static String getBluetoothMAC() {
+        return getBluetoothMAC(ContextUtils.getApplicationContext());
     }
 
     public static String getPsuedoUniqueID() {
@@ -281,16 +334,16 @@ public class DeviceUtils {
     }
 
     public static String getRadioVersion() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH ? Build.getRadioVersion() : "";
+        return Build.getRadioVersion();
     }
 
     public static String getUA(Context ctx) {
         final String system_ua = System.getProperty("http.agent");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            return new WebView(ctx).getSettings().getDefaultUserAgent(ctx) + "__" + system_ua;
-        } else {
-            return new WebView(ctx).getSettings().getUserAgentString() + "__" + system_ua;
-        }
+        return WebSettings.getDefaultUserAgent(ctx) + "__" + system_ua;
+    }
+
+    public static String getUA() {
+        return getUA(ContextUtils.getApplicationContext());
     }
 
     public static String getDensity(Context ctx) {
@@ -325,6 +378,10 @@ public class DeviceUtils {
         return densityStr;
     }
 
+    public static String getDensity() {
+        return getDensity(ContextUtils.getApplicationContext());
+    }
+
     //<uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     @SuppressWarnings("MissingPermission")
     public static String[] getGoogleAccounts(Context ctx) {
@@ -337,6 +394,10 @@ public class DeviceUtils {
             return result;
         }
         return null;
+    }
+
+    public static String[] getGoogleAccounts() {
+        return getGoogleAccounts(ContextUtils.getApplicationContext());
     }
 
 

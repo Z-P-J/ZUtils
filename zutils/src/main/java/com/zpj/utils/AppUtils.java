@@ -1,6 +1,7 @@
 package com.zpj.utils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
@@ -8,6 +9,8 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -41,6 +44,18 @@ public class AppUtils {
         return appName;
     }
 
+    public static String getAppName(Context context) {
+        return getAppName(context, context.getPackageName());
+    }
+
+    public static String getAppName(String packageName) {
+        return getAppName(ContextUtils.getApplicationContext(), packageName);
+    }
+
+    public static String getAppName() {
+        return getAppName(ContextUtils.getApplicationContext());
+    }
+
 
     public static Drawable getAppIcon(Context context, String packageName) {
         PackageManager pm = context.getPackageManager();
@@ -54,6 +69,37 @@ public class AppUtils {
         return appIcon;
     }
 
+    public static Drawable getAppIcon(String packageName) {
+        return getAppIcon(ContextUtils.getApplicationContext(), packageName);
+    }
+
+    public static Drawable getAppIcon(Context context) {
+        return getAppIcon(context, context.getPackageName());
+    }
+
+    public static Drawable getAppIcon() {
+        return getAppIcon(ContextUtils.getApplicationContext());
+    }
+
+    public static Drawable getApkIcon(Context context, String apkFilePath) {
+        PackageManager packageManager = context.getPackageManager();
+        PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
+        if (packageInfo == null) {
+            return null;
+        }
+
+        packageInfo.applicationInfo.sourceDir = apkFilePath;
+        packageInfo.applicationInfo.publicSourceDir = apkFilePath;
+
+        Drawable drawable = null;
+        try {
+            drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo);
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
+        return drawable;
+    }
+
     public static long getAppFirstInstallTime(Context context, String packageName) {
         long lastUpdateTime = 0;
         try {
@@ -63,6 +109,18 @@ public class AppUtils {
             e.printStackTrace();
         }
         return lastUpdateTime;
+    }
+
+    public static long getAppFirstInstallTime(String packageName) {
+        return getAppFirstInstallTime(ContextUtils.getApplicationContext(), packageName);
+    }
+
+    public static long getAppFirstInstallTime(Context context) {
+        return getAppFirstInstallTime(context, context.getPackageName());
+    }
+
+    public static long getAppFirstInstallTime() {
+        return getAppFirstInstallTime(ContextUtils.getApplicationContext());
     }
 
     public static long getAppLastUpdateTime(Context context, String packageName) {
@@ -78,17 +136,14 @@ public class AppUtils {
 
 
     public static long getAppSize(Context context, String packageName) {
-        long appSize = 0;
-        try {
-            ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(packageName, 0);
-            appSize = new File(applicationInfo.sourceDir).length();
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+        File file = getAppSourceFile(context, packageName);
+        if (file != null) {
+            return file.length();
         }
-        return appSize;
+        return 0;
     }
 
-    public static String getAppApk(Context context, String packageName) {
+    public static String getAppSourceDir(Context context, String packageName) {
         String sourceDir = null;
         try {
             ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(packageName, 0);
@@ -97,6 +152,18 @@ public class AppUtils {
             e.printStackTrace();
         }
         return sourceDir;
+    }
+
+    public static File getAppSourceFile(String packageName) {
+        return getAppSourceFile(ContextUtils.getApplicationContext(), packageName);
+    }
+
+    public static File getAppSourceFile(Context context, String packageName) {
+        String sourceDir = getAppSourceDir(context, packageName);
+        if (sourceDir != null) {
+            return new File(sourceDir);
+        }
+        return null;
     }
 
     public static String getAppVersionName(Context context, String packageName) {
@@ -110,6 +177,17 @@ public class AppUtils {
         return appVersion;
     }
 
+    public static String getApkVersionName(Context context, String filePath){
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo info = pm.getPackageArchiveInfo(filePath, PackageManager.GET_ACTIVITIES);
+            return info.versionName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
     public static int getAppVersionCode(Context context, String packageName) {
         int appVersionCode = 0;
         try {
@@ -121,39 +199,81 @@ public class AppUtils {
         return appVersionCode;
     }
 
+    public static int getApkVersionCode(Context context, String filePath){
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo info = pm.getPackageArchiveInfo(filePath, PackageManager.GET_ACTIVITIES);
+            return info.versionCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
     public static String getAppInstaller(Context context, String packageName) {
         return context.getPackageManager().getInstallerPackageName(packageName);
     }
 
-    public static String getAppSign(Context context, String packageName) {
-        try {
-            PackageInfo pis = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
-            return hexdigest(pis.signatures[0].toByteArray());
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new RuntimeException(AppUtils.class.getName() + "the " + packageName + "'s application not found");
-        }
+    public static String getAppSignatureMD5(Context context, String pkgName) {
+        return getAppSignature(context, pkgName, "MD5");
     }
 
-    private static String hexdigest(byte[] paramArrayOfByte) {
-        final char[] hexDigits = {48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 97, 98, 99, 100, 101, 102};
+    public static String getAppSignatureSHA1(Context context, String pkgName) {
+        return getAppSignature(context, pkgName, "SHA1");
+    }
+
+    public static String getAppSignatureSHA256(Context context, String pkgName) {
+        return getAppSignature(context, pkgName, "SHA256");
+    }
+
+    public static String getAppSignature(Context context, String pkgName, String algorithm) {
         try {
-            MessageDigest localMessageDigest = MessageDigest.getInstance("MD5");
-            localMessageDigest.update(paramArrayOfByte);
-            byte[] arrayOfByte = localMessageDigest.digest();
-            char[] arrayOfChar = new char[32];
-            for (int i = 0, j = 0; ; i++, j++) {
-                if (i >= 16) {
-                    return new String(arrayOfChar);
-                }
-                int k = arrayOfByte[i];
-                arrayOfChar[j] = hexDigits[(0xF & k >>> 4)];
-                arrayOfChar[++j] = hexDigits[(k & 0xF)];
-            }
-        } catch (Exception e) {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo packageInfo = pm.getPackageInfo(
+                    pkgName, PackageManager.GET_SIGNATURES);
+            Signature[] signs = packageInfo.signatures;
+            Signature sign = signs[0];
+            String signStr = CipherUtils.hexDigest(sign.toByteArray(), algorithm);
+            return signStr;
+        } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         return "";
     }
+
+    public static String getAppSignature(Context context, String packageName) {
+        return getAppSignatureMD5(context, packageName);
+    }
+
+    public static String getApkSignatureMD5(Context context, String apkPath) throws Exception {
+        byte[] bytes = getSignaturesFromApk(context, apkPath);
+        return CipherUtils.hexDigest(bytes, "MD5");
+    }
+
+    public static String getApkSignatureSHA1(Context context, String apkPath) throws Exception {
+        byte[] bytes = getSignaturesFromApk(context, apkPath);
+        return CipherUtils.hexDigest(bytes, "SHA1");
+    }
+
+    public static String getApkSignatureSHA256(Context context, String apkPath) throws Exception {
+        byte[] bytes = getSignaturesFromApk(context, apkPath);
+        return CipherUtils.hexDigest(bytes, "SHA256");
+    }
+
+    public static byte[] getSignaturesFromApk(Context context, String apkPath) throws IOException {
+        Log.d("getSignaturesFromApk", "apkPath=" + apkPath);
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo info = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_SIGNATURES);
+            Signature[] signatures = info.signatures;
+            return signatures[0].toByteArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 
     public static int getAppTargetSdkVersion(Context context, String packageName) {
         try {
@@ -282,17 +402,33 @@ public class AppUtils {
         return isInstalled;
     }
 
-    @Deprecated
-    public static boolean installApk(Context context, String filePath) {
-        File file = new File(filePath);
-        if (!file.exists() || !file.isFile() || file.length() <= 0) {
-            return false;
-        }
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setDataAndType(Uri.parse("file://" + filePath), "application/vnd.android.package-archive");
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(i);
-        return true;
+//    @Deprecated
+//    public static boolean installApk(Context context, String filePath) {
+//        File file = new File(filePath);
+//        if (!file.exists() || !file.isFile() || file.length() <= 0) {
+//            return false;
+//        }
+//        Intent i = new Intent(Intent.ACTION_VIEW);
+//        i.setDataAndType(Uri.parse("file://" + filePath), "application/vnd.android.package-archive");
+//        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        context.startActivity(i);
+//        return true;
+//    }
+
+    public static void installApk(Context context, String path) {
+//        Intent intent = new Intent();
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        //设置intent的Action属性
+//        intent.setAction(Intent.ACTION_VIEW);
+//        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//        //获取文件file的MIME类型
+//        String type = "application/vnd.android.package-archive";
+//        //设置intent的data和Type属性。
+//        intent.setDataAndType(/*uri*/Uri.fromFile(new File(path)), type);
+//        //跳转
+//        context.startActivity(intent);
+////        context.startActivityForResult(intent, INSTALL_REQUEST_CODE);
+        FileUtils.openFile(context, new File(path));
     }
 
     @Deprecated
@@ -306,6 +442,26 @@ public class AppUtils {
         return true;
     }
 
+    public static void uninstallApp(Context context, String packageName) {
+        Activity activity = ContextUtils.getActivity(context);
+        Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+        intent.setData(Uri.parse("package:" + packageName));
+        intent.putExtra(Intent.EXTRA_RETURN_RESULT, true);
+        activity.startActivity(intent);
+    }
+
+    public static void shareApk(String path) {
+        shareApk(ContextUtils.getApplicationContext(), path);
+    }
+
+    public static void shareApk(Context context, String path) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(path)));
+        intent.setType("application/vnd.android.package-archive");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(Intent.createChooser(intent, "分享应用"));
+    }
 
     public static boolean isSystemApp(Context context, String packageName) {
         boolean isSys = false;
@@ -438,6 +594,10 @@ public class AppUtils {
 
     public static void runApp(Context context, String packagename) {
         context.startActivity(new Intent(context.getPackageManager().getLaunchIntentForPackage(packagename)));
+    }
+
+    public static void runApp(String packagename) {
+        runApp(ContextUtils.getApplicationContext(), packagename);
     }
 
     @Deprecated

@@ -5,6 +5,7 @@ import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.FloatRange;
@@ -24,6 +25,78 @@ public final class AnimatorUtils {
     private AnimatorUtils() {
 
     }
+
+    public static void changeViewSize(final View target, float from, float to) {
+        changeViewAlpha(target, from, to, 500);
+    }
+
+    public static void changeViewSize(final View target, float from, float to, long dur) {
+        final ValueAnimator animator = ValueAnimator.ofFloat(from, to);
+        animator.setDuration(dur);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                if (target == null) {
+                    animator.cancel();
+                    return;
+                }
+                float f = (float) animator.getAnimatedValue();
+                target.setScaleX(f);
+                target.setScaleY(f);
+            }
+        });
+        animator.start();
+    }
+
+    public static void changeViewAlpha(final View target, float from, float to) {
+        changeViewSize(target, from, to, 500);
+    }
+
+    public static void changeViewAlpha(final View target, float from, float to, long dur) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(target, "alpha", from, to);
+        animator.setDuration(dur);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
+    }
+
+    public static void doDelayShowAnim(long dur, long delay, final View... targets) {
+        for (int i = 0; i < targets.length; i++) {
+            final View target = targets[i];
+            target.setAlpha(0);
+            ObjectAnimator animatorY = ObjectAnimator.ofFloat(target, "translationY", 100, 0);
+            ObjectAnimator animatorA = ObjectAnimator.ofFloat(target, "alpha", 0, 1);
+            animatorY.setDuration(dur);
+            animatorA.setDuration((long) (dur * 0.618F));
+            AnimatorSet animator = new AnimatorSet();
+            animator.playTogether(animatorA, animatorY);
+            animator.setInterpolator(new DecelerateInterpolator());
+            animator.setStartDelay(delay * i);
+            animator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    for (View view : targets) {
+                        view.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            });
+            animator.start();
+        }
+    }
+
+
 
     public static void shakeAnimator(final View view, long duration) {
         PropertyValuesHolder animator = PropertyValuesHolder.ofFloat("scaleX",

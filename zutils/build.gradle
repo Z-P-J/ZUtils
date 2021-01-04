@@ -9,7 +9,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0.3"
+        versionName "1.0.4"
     }
 
     buildTypes {
@@ -23,7 +23,7 @@ android {
         artifactId = 'ZUtils'
         userOrg = 'z-p-j'
         groupId = 'com.zpj.utils'
-        publishVersion = '1.0.3'
+        publishVersion = '1.0.4'
         desc = 'Toolkit of Android development.'
         website = 'https://github.com/Z-P-J/ZUtils'
         licences = ['Apache-2.0']
