@@ -471,6 +471,10 @@ public class FileUtils {
         return context.getPackageName() + ".z_utils_file_provider";
     }
 
+    public static String getFileProviderName() {
+        return getFileProviderName(ContextUtils.getApplicationContext());
+    }
+
     public static FileType getFileType(String fileName) {
         fileName = fileName.toLowerCase();
         if (fileName.endsWith(".torrent")) {

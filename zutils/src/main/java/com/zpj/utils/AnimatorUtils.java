@@ -61,10 +61,14 @@ public final class AnimatorUtils {
     }
 
     public static void doDelayShowAnim(long dur, long delay, final View... targets) {
+        doDelayShowAnim(dur, delay, 100, targets);
+    }
+
+    public static void doDelayShowAnim(long dur, long delay, int translationY, final View... targets) {
         for (int i = 0; i < targets.length; i++) {
             final View target = targets[i];
             target.setAlpha(0);
-            ObjectAnimator animatorY = ObjectAnimator.ofFloat(target, "translationY", 100, 0);
+            ObjectAnimator animatorY = ObjectAnimator.ofFloat(target, "translationY", translationY, 0);
             ObjectAnimator animatorA = ObjectAnimator.ofFloat(target, "alpha", 0, 1);
             animatorY.setDuration(dur);
             animatorA.setDuration((long) (dur * 0.618F));

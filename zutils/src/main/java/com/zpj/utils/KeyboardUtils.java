@@ -2,14 +2,8 @@ package com.zpj.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class KeyboardUtils {
 

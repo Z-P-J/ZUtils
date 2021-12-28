@@ -1,6 +1,5 @@
 package com.zpj.utils;
 
-import android.content.Context;
 import android.os.Build;
 
 import java.io.File;

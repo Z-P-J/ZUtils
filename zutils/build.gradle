@@ -1,15 +1,13 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion 28
-
+    compileSdkVersion 29
 
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0.4"
+        versionName "1.0.0"
     }
 
     buildTypes {
@@ -17,16 +15,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-    }
-
-    publish {
-        artifactId = 'ZUtils'
-        userOrg = 'z-p-j'
-        groupId = 'com.zpj.utils'
-        publishVersion = '1.0.4'
-        desc = 'Toolkit of Android development.'
-        website = 'https://github.com/Z-P-J/ZUtils'
-        licences = ['Apache-2.0']
     }
 
 }
