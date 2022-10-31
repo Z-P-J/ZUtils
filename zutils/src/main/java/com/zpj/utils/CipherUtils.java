@@ -115,12 +115,19 @@ public class CipherUtils {
 
 
     public static String base64Encode(String str) {
-        return Base64.encodeToString(str.getBytes(), Base64.DEFAULT);
+        return base64Encode(str, Base64.DEFAULT);
     }
 
+    public static String base64Encode(String str, int flags) {
+        return Base64.encodeToString(str.getBytes(), flags);
+    }
 
     public static String base64Decode(String str) {
-        return Base64.decode(str.getBytes(), Base64.DEFAULT).toString();
+        return base64Decode(str, Base64.DEFAULT);
+    }
+
+    public static String base64Decode(String str, int flags) {
+        return new String(Base64.decode(str.getBytes(), flags));
     }
 
 
