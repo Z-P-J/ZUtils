@@ -3,6 +3,7 @@ package com.zpj.utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -22,6 +23,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
+import java.security.MessageDigest;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -479,8 +481,8 @@ public class AppUtils {
     public static boolean isServiceRunning(Context context, String className) {
         boolean isRunning = false;
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningServiceInfo> servicesList = activityManager.getRunningServices(Integer.MAX_VALUE);
-        for (ActivityManager.RunningServiceInfo si : servicesList) {
+        List<RunningServiceInfo> servicesList = activityManager.getRunningServices(Integer.MAX_VALUE);
+        for (RunningServiceInfo si : servicesList) {
             if (className.equals(si.service.getClassName())) {
                 isRunning = true;
             }

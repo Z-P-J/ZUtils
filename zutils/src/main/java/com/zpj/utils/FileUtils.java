@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
-import android.support.v4.content.FileProvider;
+import androidx.core.content.FileProvider;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.webkit.MimeTypeMap;
@@ -35,9 +35,6 @@ import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-/**
- * Create by h4de5ing 2016/5/7 007
- */
 public class FileUtils {
 
     public static void closeIO(Closeable... closeables) {
@@ -62,8 +59,11 @@ public class FileUtils {
 
     public static void deleteFileByDirectory(File directory) {
         if (directory.exists() && directory.isDirectory()) {
-            for (File file : directory.listFiles()) {
-                file.delete();
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    file.delete();
+                }
             }
         }
     }
@@ -150,8 +150,6 @@ public class FileUtils {
             filein = new FileInputStream(in).getChannel();
             fileout = new FileOutputStream(out).getChannel();
             filein.transferTo(0, filein.size(), fileout);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -532,17 +530,17 @@ public class FileUtils {
     }
 
     public static void openFile(Context context, File file) {
-        Uri uri = Uri.fromFile(file);
         Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             Uri contentUri = FileProvider.getUriForFile(context, getFileProviderName(context), file);
 
             context.grantUriPermission(context.getPackageName(), contentUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.setDataAndType(contentUri, getMIMEType(file));
         } else {
+            Uri uri = Uri.fromFile(file);
             intent.setDataAndType(uri, getMIMEType(file));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         context.startActivity(intent);
     }

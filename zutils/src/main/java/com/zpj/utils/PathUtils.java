@@ -11,8 +11,8 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.support.annotation.RequiresApi;
-import android.support.v4.content.FileProvider;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,7 +22,6 @@ import java.io.InputStream;
 /**
  * http://stackoverflow.com/a/27271131/4739220
  */
-
 public class PathUtils {
 
     public static Uri fileToUri(Context context, String filePath) {

@@ -24,7 +24,7 @@ public class ColorUtils {
     }
 
     public static double calculateLuminance(int color) {
-        return android.support.v4.graphics.ColorUtils.calculateLuminance(color);
+        return androidx.core.graphics.ColorUtils.calculateLuminance(color);
     }
 
     private static float getContrastForColor(int color) {

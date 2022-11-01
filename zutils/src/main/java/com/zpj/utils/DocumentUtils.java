@@ -7,8 +7,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.DocumentsContract;
-import android.support.v4.provider.DocumentFile;
 import android.util.Log;
+
+import androidx.documentfile.provider.DocumentFile;
 
 import java.io.File;
 import java.io.FileInputStream;

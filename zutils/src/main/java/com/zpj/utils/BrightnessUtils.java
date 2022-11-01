@@ -3,7 +3,7 @@ package com.zpj.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.provider.Settings;
-import android.support.annotation.FloatRange;
+import androidx.annotation.FloatRange;
 import android.view.WindowManager;
 
 import static android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
