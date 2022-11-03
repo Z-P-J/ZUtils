@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 31
@@ -22,4 +23,32 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0'
+}
+
+
+
+
+
+afterEvaluate {
+    publishing {
+        publications {
+            def versionName = LIB_VERSION
+            def groupName = 'com.zpj.utils'
+            def artifactName = 'ZUtils'
+            release(MavenPublication) {
+                from components.release
+
+                groupId = groupName
+                artifactId = artifactName
+                version = versionName
+            }
+            debug(MavenPublication) {
+                from components.debug
+
+                groupId = groupName
+                artifactId = artifactName
+                version = versionName
+            }
+        }
+    }
 }
